@@ -1,0 +1,2983 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>БКС МИ 2030 — клиентские пути</title>
+  <style>
+    :root {
+      --bg: #f2f3f5;
+      --surface: #ffffff;
+      --ink: #17191c;
+      --muted: #6d727a;
+      --line: #cfd3d8;
+      --line-dark: #9ca2aa;
+      --accent: #1c5eff;
+      --accent-soft: #e8efff;
+      --positive: #177245;
+      --positive-soft: #e8f5ee;
+      --warning: #9a5b00;
+      --warning-soft: #fff3dc;
+      --danger: #ad2d2d;
+      --danger-soft: #faeaea;
+      --phone-width: 390px;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px),
+        var(--bg);
+      background-size: 24px 24px;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 64px 1fr;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 0 28px;
+      border-bottom: 1px solid var(--line-dark);
+      background: rgba(255,255,255,.96);
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      white-space: nowrap;
+    }
+
+    .brand strong { font-size: 17px; }
+    .brand span { color: var(--muted); font-size: 13px; }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mode-pill {
+      padding: 7px 10px;
+      border: 1px solid var(--line-dark);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(220px, 270px) minmax(430px, 1fr) minmax(260px, 340px);
+      min-height: calc(100vh - 64px);
+    }
+
+    .sidebar,
+    .inspector {
+      padding: 24px 20px;
+      background: rgba(255,255,255,.94);
+    }
+
+    .sidebar { border-right: 1px solid var(--line-dark); }
+    .inspector { border-left: 1px solid var(--line-dark); }
+
+    .panel-label {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .flow-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .flow-button {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      text-align: left;
+    }
+
+    .flow-button:hover { border-color: var(--line-dark); }
+
+    .flow-button.active {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: white;
+    }
+
+    .flow-button strong,
+    .flow-button span { display: block; }
+
+    .flow-button strong {
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .flow-button span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .flow-button.active span { color: #c8ccd1; }
+
+    .principle {
+      margin-top: 24px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .principle p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .stage {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 28px 24px 48px;
+      overflow: auto;
+    }
+
+    .phone-wrap { width: var(--phone-width); }
+
+    .screen-counter {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-width);
+      height: 780px;
+      overflow: hidden;
+      border: 2px solid var(--ink);
+      border-radius: 34px;
+      background: var(--surface);
+      box-shadow: 0 16px 40px rgba(23,25,28,.14);
+    }
+
+    .phone::before {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      z-index: 5;
+      width: 92px;
+      height: 24px;
+      border-radius: 16px;
+      background: var(--ink);
+      content: "";
+      transform: translateX(-50%);
+    }
+
+    .screen {
+      height: 100%;
+      padding: 46px 18px 34px;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+
+    .screen::-webkit-scrollbar { display: none; }
+
+    .status-row,
+    .screen-header,
+    .inline,
+    .split,
+    .metric-row,
+    .card-head,
+    .action-row {
+      display: flex;
+      align-items: center;
+    }
+
+    .status-row {
+      justify-content: space-between;
+      margin-bottom: 14px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .screen-header {
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 34px;
+      margin-bottom: 16px;
+    }
+
+    .screen-header h1 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+
+    .icon-button,
+    .back-button {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: var(--surface);
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .profile-button {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      border: 1px solid var(--ink);
+      border-radius: 50%;
+      background: var(--ink);
+      color: white;
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .health-pill {
+      display: inline-flex;
+      flex: 1;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      height: 30px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #f8f8f8;
+      color: var(--ink);
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .health-pill small {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 650;
+    }
+
+    .back-button { font-size: 17px; }
+
+    .hero-value {
+      padding: 8px 0 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .big-number {
+      margin: 0;
+      font-size: 34px;
+      font-weight: 750;
+      letter-spacing: 0;
+    }
+
+    .delta {
+      margin-top: 6px;
+      color: var(--positive);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .delta.negative { color: var(--danger); }
+
+    .result-chip {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      margin-top: 8px;
+      padding: 6px 10px;
+      border: 1px solid var(--positive);
+      border-radius: 18px;
+      background: var(--positive-soft);
+      color: var(--positive);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .periods {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .period {
+      padding: 5px 8px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .period.active {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: white;
+    }
+
+    .ai-panel {
+      margin: 16px 0;
+      padding: 14px;
+      border: 2px solid var(--ink);
+      background: #fafafa;
+    }
+
+    .ai-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .ai-dot {
+      width: 9px;
+      height: 9px;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      background: white;
+    }
+
+    .ai-input {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 42px 12px 12px;
+      border: 1px solid var(--line-dark);
+      background: var(--surface);
+      color: var(--muted);
+      text-align: left;
+      position: relative;
+    }
+
+    .ai-input::after {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      content: "→";
+      color: var(--ink);
+      font-size: 20px;
+    }
+
+    .suggestions {
+      display: grid;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .suggestion {
+      padding: 10px;
+      border: 1px solid var(--line);
+      background: white;
+      text-align: left;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .suggestion:hover { border-color: var(--ink); }
+
+    .section-title {
+      margin: 20px 0 10px;
+      font-size: 14px;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .home-canvas {
+      min-height: 560px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .home-canvas > .hero-value {
+      display: grid;
+      justify-items: center;
+      text-align: center;
+    }
+
+    .portfolio-hero {
+      display: grid;
+      justify-items: center;
+      text-align: center;
+    }
+
+    .home-spacer { min-height: 18px; }
+
+    .alerts-carousel {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      margin: 12px -18px 0;
+      padding: 0 18px 4px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+
+    .alerts-carousel::-webkit-scrollbar { display: none; }
+
+    .alert-card {
+      flex: 0 0 82%;
+      min-height: 84px;
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: white;
+      color: inherit;
+      text-align: left;
+      scroll-snap-align: start;
+    }
+
+    .alert-card.emphasis {
+      border-color: var(--ink);
+      background: #f8f8f8;
+    }
+
+    .alert-card h3 {
+      margin: 6px 0 4px;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .alert-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.35;
+    }
+
+    .agent-launcher {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--ink);
+      border-radius: 28px;
+      background: var(--ink);
+      color: white;
+      text-align: left;
+    }
+
+    .agent-launcher span { display: block; }
+    .agent-launcher strong { font-size: 13px; }
+    .agent-launcher small { margin-top: 2px; color: #cfd2d6; font-size: 10px; }
+
+    .agent-orb {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      border: 1px solid white;
+      border-radius: 50%;
+      font-size: 17px;
+    }
+
+    .compact-input {
+      position: relative;
+      width: 100%;
+      min-height: 50px;
+      padding: 14px 46px 14px 16px;
+      border: 1px solid var(--line-dark);
+      border-radius: 26px;
+      background: white;
+      color: var(--muted);
+      text-align: left;
+    }
+
+    .ai-command {
+      position: relative;
+      z-index: 8;
+      margin-top: 8px;
+      padding: 10px;
+      border: 1px solid #2a2d31;
+      border-radius: 26px;
+      background: #1f2125;
+      color: white;
+      box-shadow: 0 10px 24px rgba(23,25,28,.2);
+    }
+
+    .ai-command-prompt {
+      display: block;
+      width: 100%;
+      min-height: 40px;
+      border: 0;
+      background: transparent;
+      color: #b9bdc5;
+      text-align: left;
+      font-size: 15px;
+      line-height: 1.15;
+    }
+
+    .ai-command-field {
+      display: grid;
+      gap: 6px;
+      padding: 6px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 22px;
+      background: rgba(0,0,0,.2);
+    }
+
+    .ai-command-top {
+      display: grid;
+      grid-template-columns: 1fr 36px;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .ai-command-tools {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .command-pill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 36px;
+      padding: 0 9px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 16px;
+      background: rgba(255,255,255,.08);
+      color: white;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .command-pill.icon-only {
+      width: 36px;
+      padding: 0;
+      font-size: 16px;
+    }
+
+    .command-pill.secondary { color: #d9dce2; }
+
+    .floating-plus {
+      position: absolute;
+      right: 18px;
+      bottom: 28px;
+      z-index: 9;
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--ink);
+      border-radius: 50%;
+      background: var(--ink);
+      color: white;
+      font-size: 20px;
+      box-shadow: 0 12px 24px rgba(23,25,28,.22);
+    }
+
+    .sheet-scrim {
+      position: absolute;
+      inset: 0;
+      z-index: 14;
+      display: none;
+      background: rgba(23,25,28,.32);
+      backdrop-filter: blur(4px);
+    }
+
+    .explain-sheet {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 15;
+      display: none;
+      max-height: 78%;
+      overflow-y: auto;
+      padding: 10px 18px 18px;
+      border: 1px solid var(--line);
+      border-radius: 28px 28px 0 0;
+      background: white;
+      box-shadow: 0 -16px 36px rgba(23,25,28,.2);
+      scrollbar-width: none;
+    }
+
+    .explain-sheet::-webkit-scrollbar { display: none; }
+    .phone.sheet-open .sheet-scrim,
+    .phone.sheet-open .explain-sheet { display: block; }
+    .phone.account-sheet-open .sheet-scrim,
+    .phone.account-sheet-open .account-sheet { display: block; }
+
+    .sheet-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: white;
+      color: var(--ink);
+      font-size: 16px;
+    }
+
+    .sheet-handle {
+      width: 46px;
+      height: 4px;
+      margin: 0 auto 14px;
+      border-radius: 999px;
+      background: var(--line-dark);
+    }
+
+    .sheet-title {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.15;
+    }
+
+    .impact-list {
+      display: grid;
+      gap: 7px;
+      margin: 12px 0;
+    }
+
+    .impact-item {
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fafafa;
+    }
+
+    button.impact-item {
+      width: 100%;
+      color: inherit;
+      text-align: left;
+    }
+
+    .impact-item strong,
+    .impact-item span { display: block; }
+
+    .impact-item strong {
+      font-size: 12px;
+    }
+
+    .impact-item span {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.3;
+    }
+
+    .account-sheet {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 15;
+      display: none;
+      padding: 10px 18px 18px;
+      border: 1px solid var(--line);
+      border-radius: 28px 28px 0 0;
+      background: white;
+      box-shadow: 0 -16px 36px rgba(23,25,28,.2);
+    }
+
+    .account-selector {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0 auto 8px;
+      padding: 7px 10px;
+      border: 1px solid var(--line-dark);
+      border-radius: 18px;
+      background: white;
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .portfolio-pager {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .portfolio-pager span {
+      display: block;
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--line-dark);
+      opacity: .6;
+    }
+
+    .portfolio-pager span.active {
+      width: 24px;
+      background: var(--ink);
+      opacity: 1;
+    }
+
+    .view-panel { margin-top: 12px; }
+    .portfolio-view { display: none; }
+    .portfolio-view.active { display: block; }
+
+    .theme-options {
+      display: grid;
+      gap: 9px;
+    }
+
+    .theme-card {
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--line);
+      background: white;
+      color: inherit;
+      text-align: left;
+    }
+
+    .theme-card.active { border-color: var(--ink); }
+
+    .theme-preview {
+      display: grid;
+      gap: 4px;
+      height: 42px;
+      padding: 6px;
+      border: 1px solid var(--line-dark);
+      background: #f8f8f8;
+    }
+
+    .theme-preview span {
+      display: block;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--ink);
+    }
+
+    .theme-preview.minimal span { background: #8b9098; }
+    .theme-preview.focus { background: #202327; }
+    .theme-preview.focus span { background: #dfe3ea; }
+
+    .finsa-bubble {
+      margin-top: 12px;
+      padding: 14px;
+      border: 1px solid var(--ink);
+      border-radius: 22px;
+      background: #f8f8f8;
+    }
+
+    .finsa-bubble h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+    }
+
+    .finsa-bubble ol {
+      margin: 8px 0 0 18px;
+      padding: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .ai-compose {
+      display: grid;
+      grid-template-columns: 1fr 42px;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .voice-button {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--ink);
+      color: white;
+      font-size: 15px;
+    }
+
+    .input-suggestions {
+      position: relative;
+      z-index: 8;
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-rows: repeat(2, auto);
+      grid-auto-columns: max-content;
+      gap: 6px;
+      overflow-x: auto;
+      margin: 14px -18px 0;
+      padding: 0 18px 2px;
+      scrollbar-width: none;
+    }
+
+    .input-suggestions::-webkit-scrollbar { display: none; }
+
+    .input-suggestion {
+      flex: 0 0 auto;
+      padding: 6px 9px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: white;
+      color: var(--ink);
+      font-size: 9px;
+      line-height: 1.2;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .home-widgets {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .home-widget {
+      min-height: 88px;
+      padding: 11px;
+      border: 1px solid var(--line);
+      background: white;
+      color: inherit;
+      text-align: left;
+    }
+
+    .home-widget strong,
+    .home-widget span { display: block; }
+
+    .home-widget strong { margin-top: 12px; font-size: 13px; }
+    .home-widget span { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.25; }
+
+    .widget-icon {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--line-dark);
+      border-radius: 50%;
+      font-size: 11px;
+    }
+
+    .widget-manager {
+      display: grid;
+      gap: 8px;
+    }
+
+    .widget-row {
+      display: grid;
+      grid-template-columns: 32px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 11px;
+      border: 1px solid var(--line);
+      background: white;
+    }
+
+    .widget-row.selected { border-color: var(--ink); }
+
+    .drag-handle {
+      color: var(--muted);
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .widget-row strong { display: block; font-size: 12px; }
+    .widget-row small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+
+    .toggle {
+      width: 36px;
+      height: 22px;
+      padding: 3px;
+      border: 1px solid var(--line-dark);
+      border-radius: 14px;
+      background: white;
+    }
+
+    .toggle::after {
+      display: block;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--line-dark);
+      content: "";
+    }
+
+    .toggle.on {
+      border-color: var(--ink);
+      background: var(--ink);
+    }
+
+    .toggle.on::after {
+      margin-left: 14px;
+      background: white;
+    }
+
+    .voice-state {
+      display: grid;
+      place-items: center;
+      min-height: 360px;
+      text-align: center;
+    }
+
+    .voice-orb {
+      display: grid;
+      place-items: center;
+      width: 108px;
+      height: 108px;
+      margin: 0 auto 24px;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 0 0 16px var(--accent-soft);
+      font-size: 32px;
+    }
+
+    .transcript {
+      margin: 18px 0;
+      padding: 15px;
+      border-left: 3px solid var(--ink);
+      background: #f7f7f7;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .ui-preview {
+      padding: 12px;
+      border: 2px solid var(--ink);
+      background: #fafafa;
+    }
+
+    .preview-row {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .preview-block {
+      min-height: 64px;
+      padding: 9px;
+      border: 1px solid var(--line-dark);
+      background: white;
+      font-size: 10px;
+    }
+
+    .preview-block.primary { min-height: 92px; background: var(--accent-soft); }
+
+    .personalized-home .hero-value { padding-bottom: 8px; }
+    .personalized-home .home-widget:first-child { grid-column: 1 / -1; min-height: 92px; }
+
+    .action-scrim {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: none;
+      background: rgba(255,255,255,.76);
+      backdrop-filter: blur(5px);
+    }
+
+    .phone.actions-open .action-scrim { display: block; }
+
+    .fab-menu {
+      position: absolute;
+      right: 18px;
+      bottom: 84px;
+      z-index: 13;
+      display: none;
+      gap: 9px;
+      justify-items: end;
+    }
+
+    .phone.actions-open .fab-menu { display: grid; }
+
+    .fab-action {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .fab-action b {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: white;
+      font-size: 16px;
+    }
+
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px;
+    }
+
+    .agent-tile {
+      position: relative;
+      min-height: 136px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      background: white;
+      color: inherit;
+      text-align: left;
+    }
+
+    .agent-tile.selected {
+      border: 2px solid var(--ink);
+      background: var(--accent-soft);
+    }
+
+    .agent-tile h3 { margin: 24px 0 0; font-size: 13px; }
+    .agent-tile p { margin: 6px 0 0; color: var(--muted); font-size: 10px; line-height: 1.35; }
+
+    .agent-symbol {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--line-dark);
+      border-radius: 50%;
+      background: white;
+      font-size: 11px;
+    }
+
+    .agent-check {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: grid;
+      place-items: center;
+      width: 20px;
+      height: 20px;
+      border: 1px solid var(--line-dark);
+      border-radius: 50%;
+      background: white;
+      font-size: 10px;
+    }
+
+    .agent-tile.selected .agent-check {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: white;
+    }
+
+    .sticky-action {
+      position: sticky;
+      bottom: -72px;
+      margin: 16px -2px 0;
+      padding-top: 10px;
+      background: linear-gradient(transparent, white 24%);
+    }
+
+    .event-zone,
+    .decision-zone {
+      padding: 14px;
+      border: 1px solid var(--line);
+    }
+
+    .event-zone { background: var(--warning-soft); }
+    .decision-zone { margin-top: 10px; background: white; }
+
+    .zone-label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 750;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .action-chips {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      margin: 10px -14px -2px;
+      padding: 0 14px 4px;
+      scrollbar-width: none;
+    }
+
+    .action-chips::-webkit-scrollbar { display: none; }
+
+    .action-chip {
+      flex: 0 0 auto;
+      padding: 9px 11px;
+      border: 1px solid var(--line-dark);
+      border-radius: 20px;
+      background: white;
+      color: var(--ink);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .action-chip.primary {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: white;
+    }
+
+    .quick-action {
+      min-width: 0;
+      padding: 9px 4px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      font-size: 10px;
+    }
+
+    .quick-action b {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      margin: 0 auto 6px;
+      border: 1px solid var(--line-dark);
+      border-radius: 50%;
+    }
+
+    .card {
+      margin-bottom: 10px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    button.card {
+      width: 100%;
+      color: inherit;
+      text-align: left;
+    }
+
+    .card.emphasis { border: 2px solid var(--ink); }
+    .card.warning { background: var(--warning-soft); }
+    .card.success { background: var(--positive-soft); }
+    .card.danger { background: var(--danger-soft); }
+
+    .card-head {
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .card h2,
+    .card h3,
+    .card p { margin: 0; }
+
+    .card h2 { font-size: 17px; }
+    .card h3 { font-size: 13px; }
+
+    .card p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 6px;
+      border: 1px solid var(--line-dark);
+      background: white;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .metric-row {
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+    }
+
+    .metric-row:last-child { border-bottom: 0; }
+    .metric-row strong { text-align: right; }
+
+    .bar {
+      height: 8px;
+      margin: 6px 0 2px;
+      overflow: hidden;
+      border: 1px solid var(--line-dark);
+      background: white;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      background: var(--ink);
+    }
+
+    .button-primary,
+    .button-secondary,
+    .button-danger {
+      min-height: 44px;
+      padding: 10px 14px;
+      border: 1px solid var(--ink);
+      font-weight: 650;
+    }
+
+    .button-primary {
+      background: var(--ink);
+      color: white;
+    }
+
+    .button-secondary {
+      background: white;
+      color: var(--ink);
+    }
+
+    .button-danger {
+      border-color: var(--danger);
+      background: white;
+      color: var(--danger);
+    }
+
+    .button-block { width: 100%; }
+
+    .action-row {
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .action-row > * { flex: 1; }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .input,
+    .select {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid var(--line-dark);
+      background: white;
+      color: var(--ink);
+      font-size: 12px;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      border: 1px solid var(--line-dark);
+    }
+
+    .segment {
+      padding: 9px 4px;
+      border: 0;
+      border-right: 1px solid var(--line-dark);
+      background: white;
+      font-size: 10px;
+    }
+
+    .segment:last-child { border-right: 0; }
+    .segment.active { background: var(--ink); color: white; }
+
+    .timeline {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .timeline li {
+      position: relative;
+      margin-left: 7px;
+      padding: 0 0 14px 18px;
+      border-left: 1px solid var(--line-dark);
+    }
+
+    .timeline li:last-child { border-left-color: transparent; }
+
+    .timeline li::before {
+      position: absolute;
+      top: 2px;
+      left: -5px;
+      width: 9px;
+      height: 9px;
+      border: 1px solid var(--ink);
+      border-radius: 50%;
+      background: white;
+      content: "";
+    }
+
+    .timeline strong {
+      display: block;
+      font-size: 12px;
+    }
+
+    .timeline span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 9px 8px 17px;
+      border-top: 1px solid var(--line-dark);
+      background: rgba(255,255,255,.98);
+    }
+
+    .nav-item {
+      padding: 5px 2px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .nav-item b {
+      display: block;
+      margin-bottom: 3px;
+      color: inherit;
+      font-size: 14px;
+    }
+
+    .nav-item.active { color: var(--ink); font-weight: 700; }
+
+    .step-list {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .step-button {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 9px;
+      align-items: center;
+      width: 100%;
+      padding: 9px;
+      border: 1px solid var(--line);
+      background: white;
+      text-align: left;
+    }
+
+    .step-button.active {
+      border-color: var(--ink);
+      background: var(--accent-soft);
+    }
+
+    .step-number {
+      display: grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border: 1px solid var(--line-dark);
+      border-radius: 50%;
+      background: white;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .step-button span:last-child {
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .screen-note {
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .screen-note h3 {
+      margin: 0 0 5px;
+      font-size: 12px;
+    }
+
+    .screen-note p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .legend {
+      margin-top: 20px;
+      padding: 12px;
+      border: 1px dashed var(--line-dark);
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .empty-state {
+      display: grid;
+      place-items: center;
+      min-height: 480px;
+      text-align: center;
+    }
+
+    .empty-state p {
+      max-width: 260px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1040px) {
+      .workspace { grid-template-columns: 220px minmax(430px, 1fr); }
+      .inspector { display: none; }
+    }
+
+    @media (max-width: 740px) {
+      .app-shell { display: block; }
+      .topbar {
+        position: static;
+        min-height: 58px;
+        padding: 12px 16px;
+      }
+      .brand span, .mode-pill { display: none; }
+      .workspace { display: block; }
+      .sidebar {
+        overflow-x: auto;
+        padding: 14px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line-dark);
+      }
+      .panel-label, .principle { display: none; }
+      .flow-list {
+        display: flex;
+        width: max-content;
+      }
+      .flow-button { width: 170px; }
+      .stage {
+        justify-content: flex-start;
+        padding: 18px 12px 36px;
+      }
+      .phone-wrap {
+        width: min(100%, var(--phone-width));
+        margin: 0 auto;
+      }
+      .phone {
+        width: 100%;
+        height: min(780px, calc(100vh - 170px));
+        min-height: 620px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <strong>БКС МИ 2030</strong>
+        <span>Клиентские пути и поэкранные wireframes</span>
+      </div>
+      <div class="top-actions">
+        <span class="mode-pill">Low-fi / v0.1</span>
+        <button class="button-secondary" id="restartButton">Начать путь заново</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        <p class="panel-label">Клиентские пути</p>
+        <nav class="flow-list" id="flowList"></nav>
+        <div class="principle">
+          <p class="panel-label">Общий принцип</p>
+          <p>Портфель → персональный контекст → объяснение → решение → контролируемое действие.</p>
+        </div>
+      </aside>
+
+      <section class="stage">
+        <div class="phone-wrap">
+          <div class="screen-counter">
+            <span id="flowTitle">Главный экран</span>
+            <span id="screenCounter">Экран 1 из 1</span>
+          </div>
+          <div class="phone" id="phone"></div>
+        </div>
+      </section>
+
+      <aside class="inspector">
+        <p class="panel-label">Экраны пути</p>
+        <div class="step-list" id="stepList"></div>
+        <div class="screen-note">
+          <h3>Задача экрана</h3>
+          <p id="screenGoal"></p>
+        </div>
+        <div class="screen-note">
+          <h3>Роль AI</h3>
+          <p id="aiRole"></p>
+        </div>
+        <div class="screen-note">
+          <h3>Ключевое действие</h3>
+          <p id="primaryAction"></p>
+        </div>
+        <div class="legend">
+          Интерактивные элементы обведены сплошной линией. Нажимайте на саджесты, карточки и основные кнопки внутри телефона.
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    const status = `
+      <div class="status-row">
+        <span>09:41</span>
+        <span>● ◒ 87%</span>
+      </div>`;
+
+    const bottomNav = () => "";
+
+    const header = (title, back = true, action = "•••") => `
+      <div class="screen-header">
+        ${back ? `<button class="back-button" data-back aria-label="Назад">←</button>` : `<button class="icon-button" aria-label="Меню">≡</button>`}
+        <h1>${title}</h1>
+        <button class="icon-button" aria-label="Дополнительно">${action}</button>
+      </div>`;
+
+    const explainSheet = () => `
+      <div class="sheet-scrim" data-sheet-close></div>
+      <section class="explain-sheet" aria-label="Почему снизился портфель">
+        <div class="sheet-handle"></div>
+        <button class="sheet-close" data-sheet-close aria-label="Закрыть">×</button>
+        <span class="tag">Финс объясняет</span>
+        <h2 class="sheet-title">Почему портфель снизился сегодня</h2>
+        <p>Основной вклад дали акции X и валютная часть. Две причины объясняют 78% снижения, а общий риск портфеля существенно не изменился.</p>
+        <div class="impact-list">
+          <div class="impact-item">
+            <div class="metric-row"><strong>Акции X</strong><strong style="color:var(--danger)">−46 800 ₽</strong></div>
+            <span>Снижение после публикации операционных результатов. Доля позиции остается высокой — 18,4%.</span>
+          </div>
+          <div class="impact-item">
+            <div class="metric-row"><strong>Валютные активы</strong><strong style="color:var(--danger)">−18 900 ₽</strong></div>
+            <span>Рубль укрепился на 1,2% за день, поэтому валютная часть дала отрицательный вклад.</span>
+          </div>
+        </div>
+        <div class="card success">
+          <div class="card-head"><h3>Срочное действие не требуется</h3><span class="tag">Риск ок</span></div>
+          <p>Портфель не вышел за рамки риск-профиля, но концентрацию можно поставить на контроль.</p>
+        </div>
+        <div class="action-row">
+          <button class="button-secondary" data-flow="positionControl">Настроить контроль</button>
+          <button class="button-primary" data-flow="priceAgent">Подготовить сценарий</button>
+        </div>
+      </section>`;
+
+    const accountSheet = () => `
+      <div class="sheet-scrim" data-account-close></div>
+      <section class="account-sheet" aria-label="Выбор счета">
+        <div class="sheet-handle"></div>
+        <button class="sheet-close" data-account-close aria-label="Закрыть">×</button>
+        <span class="tag">Счета</span>
+        <h2 class="sheet-title">Выберите счет</h2>
+        <div class="impact-list">
+          <button class="impact-item" data-account-close>
+            <div class="metric-row"><strong>Все счета</strong><strong>12,48 млн ₽</strong></div>
+            <span>Сводный портфель по всем брокерским счетам и ИИС.</span>
+          </button>
+          <button class="impact-item" data-account-close>
+            <div class="metric-row"><strong>Брокерский счет</strong><strong>8,21 млн ₽</strong></div>
+            <span>Основной инвестиционный счет.</span>
+          </button>
+          <button class="impact-item" data-account-close>
+            <div class="metric-row"><strong>ИИС</strong><strong>2,74 млн ₽</strong></div>
+            <span>Долгосрочная часть и налоговый контекст.</span>
+          </button>
+          <button class="impact-item" data-account-close>
+            <div class="metric-row"><strong>Валютный счет</strong><strong>1,53 млн ₽</strong></div>
+            <span>Валютная часть портфеля и денежные остатки.</span>
+          </button>
+        </div>
+      </section>`;
+
+    const screens = {
+      home: {
+        title: "Главный экран",
+        goal: "С первого взгляда дать состояние капитала и персональные поводы для действия.",
+        ai: "Выбирает релевантные саджесты и связывает события рынка с портфелем.",
+        action: "Задать запрос или открыть персональный повод.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            <div class="home-canvas">
+              <div class="screen-header">
+                <button class="profile-button" aria-label="Профиль">АК</button>
+                <div class="health-pill">Здоровье 82/100 <small>откл. 6%</small></div>
+                <button class="icon-button" aria-label="Уведомления">🔔</button>
+              </div>
+              <section class="hero-value" style="border-bottom:0">
+                <p class="eyebrow">Все счета</p>
+                <p class="big-number">12 480 650 ₽</p>
+                <div class="result-chip">+12% за все время</div>
+              </section>
+
+              <div class="home-widgets">
+                <button class="home-widget" data-flow="portfolio">
+                  <span class="widget-icon">▥</span>
+                  <strong>Портфель</strong>
+                  <span>Структура, счета и позиции</span>
+                </button>
+                <button class="home-widget" data-flow="briefing">
+                  <span class="widget-icon">↗</span>
+                  <strong>Рынки</strong>
+                  <span>Что важно именно для вас</span>
+                </button>
+              </div>
+
+              <div class="alerts-carousel" aria-label="Важные уведомления">
+                <button class="alert-card emphasis" data-flow="positionControl">
+                  <span class="tag">Здоровье портфеля</span>
+                  <h3>Портфель отклонился от цели</h3>
+                  <p>Акции X — 18,4%. Алгоритм предлагает ребалансировку до целевого состояния.</p>
+                </button>
+                <button class="alert-card" data-flow="briefing">
+                  <span class="tag">Рынок</span>
+                  <h3>Ставка влияет на облигации</h3>
+                  <p>AI собрал короткое объяснение для ваших бумаг.</p>
+                </button>
+                <button class="alert-card" data-go="explain">
+                  <span class="tag">Потребности</span>
+                  <h3>Кошелек ниже целевого уровня</h3>
+                  <p>Ликвидная часть 7% вместо 10%. Можно пополнить недостающий класс.</p>
+                </button>
+              </div>
+
+              <div class="input-suggestions">
+                <button class="input-suggestion" data-go="explain">Почему снизился портфель?</button>
+                <button class="input-suggestion" data-flow="briefing">Что важно сегодня?</button>
+                <button class="input-suggestion" data-flow="dailySummary">Настрой ежедневную сводку</button>
+                <button class="input-suggestion" data-flow="positionControl">Проверить отклонения</button>
+                <button class="input-suggestion" data-flow="agents">Запустить агента</button>
+                <button class="input-suggestion" data-flow="documentFlow">Заказать отчет</button>
+              </div>
+              <div class="ai-command">
+                <div class="ai-command-field">
+                  <div class="ai-command-top">
+                    <button class="ai-command-prompt" data-flow="dailySummary">Спросите о портфеле или рынке</button>
+                    <button class="command-pill icon-only secondary" data-flow="priceAgent" aria-label="Голосовой помощник">◉</button>
+                  </div>
+                  <div class="ai-command-tools">
+                    <button class="command-pill" data-flow="agents">◎ Мои агенты</button>
+                    <button class="command-pill icon-only secondary" aria-label="Прикрепить файл">📎</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="floating-plus" data-actions-toggle aria-label="Быстрые действия">+</button>
+          ${explainSheet()}
+          <div class="action-scrim" data-actions-close></div>
+          <div class="fab-menu">
+            <button class="fab-action"><span>Пополнить</span><b>+</b></button>
+            <button class="fab-action"><span>Вывести</span><b>−</b></button>
+            <button class="fab-action"><span>Избранное</span><b>☆</b></button>
+            <button class="fab-action"><span>Банковский режим</span><b>₽</b></button>
+          </div>
+          ${bottomNav("home")}`
+      },
+
+      explainInput: {
+        title: "Запрос к AI",
+        goal: "Принять естественный запрос, сохранив контекст портфеля.",
+        ai: "Определяет намерение и заранее показывает используемый контекст.",
+        action: "Отправить запрос на анализ снижения.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Спросить AI")}
+            <div class="card emphasis">
+              <span class="tag">Используется контекст</span>
+              <p>Все брокерские счета · результат за сегодня · новости и события по позициям</p>
+            </div>
+            <div class="field">
+              <label>Ваш запрос</label>
+              <div class="input">Почему мой портфель снизился сегодня?</div>
+            </div>
+            <div class="suggestions">
+              <button class="suggestion">Объясни кратко, без терминов</button>
+              <button class="suggestion">Сравни с индексом Мосбиржи</button>
+              <button class="suggestion">Покажи вклад каждой позиции</button>
+            </div>
+            <div class="card" style="margin-top:16px">
+              <h3>AI покажет</h3>
+              <p>Причины изменения, вклад позиций, связанные события, изменение риска и возможные следующие шаги.</p>
+            </div>
+            <button class="button-primary button-block" data-next>Проанализировать</button>
+          </div>`
+      },
+
+      explainSummary: {
+        title: "Причины снижения",
+        goal: "Дать короткий вывод, а затем позволить раскрыть доказательства.",
+        ai: "Сводит портфельные данные и рыночный контекст в причинное объяснение.",
+        action: "Открыть вклад позиций или настроить наблюдение.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Почему −84 200 ₽")}
+            <div class="card emphasis">
+              <span class="tag">Короткий ответ</span>
+              <h2 style="margin-top:8px">Основная причина — акции X и укрепление рубля</h2>
+              <p>Две позиции объясняют 78% снижения. Общий риск портфеля существенно не изменился.</p>
+            </div>
+            <h2 class="section-title">Вклад в результат</h2>
+            <button class="card" data-next>
+              <div class="metric-row"><span>Акции X</span><strong style="color:var(--danger)">−46 800 ₽</strong></div>
+              <div class="bar"><span style="width:56%"></span></div>
+              <p>Снижение после публикации операционных результатов.</p>
+            </button>
+            <div class="card">
+              <div class="metric-row"><span>Валютные активы</span><strong style="color:var(--danger)">−18 900 ₽</strong></div>
+              <div class="bar"><span style="width:23%"></span></div>
+              <p>Рубль укрепился на 1,2% за день.</p>
+            </div>
+            <div class="card success">
+              <div class="card-head"><h3>Оценка риска</h3><span class="tag">Без изменений</span></div>
+              <p>Волатильность выросла незначительно. Срочных действий не требуется.</p>
+            </div>
+            <div class="action-row">
+              <button class="button-secondary" data-flow="positionControl">Настроить контроль</button>
+              <button class="button-primary" data-next>Что можно сделать</button>
+            </div>
+          </div>`
+      },
+
+      explainDetails: {
+        title: "Детали позиции",
+        goal: "Показать факты, источники и отличие краткосрочного события от долгосрочного риска.",
+        ai: "Группирует подтвержденные факты, мнения и влияние на конкретную позицию.",
+        action: "Перейти к вариантам действия.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Акции X")}
+            <div class="hero-value">
+              <p class="eyebrow">Вклад в результат сегодня</p>
+              <p class="big-number" style="font-size:30px">−46 800 ₽</p>
+              <p class="delta negative">Цена −4,8%</p>
+            </div>
+            <h2 class="section-title">Что произошло</h2>
+            <div class="card">
+              <h3>Компания раскрыла результаты ниже ожиданий</h3>
+              <p>Рынок сильнее всего отреагировал на замедление темпа роста. Факт подтвержден отчетностью компании.</p>
+              <div style="margin-top:9px"><span class="tag">Отчетность</span> <span class="tag">2 источника</span></div>
+            </div>
+            <div class="card">
+              <h3>Мнения разделились</h3>
+              <p>4 аналитика считают реакцию чрезмерной, 3 пересмотрели прогноз. Это мнения, а не подтвержденные факты.</p>
+            </div>
+            <div class="card success">
+              <h3>Что изменилось для вас</h3>
+              <p>Доля позиции осталась высокой — 18,4%. Горизонт и риск-профиль не нарушены, но концентрация требует наблюдения.</p>
+            </div>
+            <button class="button-primary button-block" data-next>Посмотреть варианты</button>
+          </div>`
+      },
+
+      explainActions: {
+        title: "Следующие шаги",
+        goal: "Предложить несколько допустимых альтернатив без давления на сделку.",
+        ai: "Сопоставляет событие с целью, горизонтом и риск-профилем клиента.",
+        action: "Выбрать наблюдение, консультацию или подготовку операции.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Варианты действий")}
+            <div class="card success">
+              <h3>Срочное действие не требуется</h3>
+              <p>Снижение не вывело портфель за рамки вашего риск-профиля.</p>
+            </div>
+            <button class="card emphasis" data-flow="positionControl">
+              <div class="card-head"><h3>Настроить агента наблюдения</h3><span>→</span></div>
+              <p>Сообщить, если доля позиции превысит 20% или появится значимое новое событие.</p>
+            </button>
+            <button class="card">
+              <div class="card-head"><h3>Обсудить с советником</h3><span>→</span></div>
+              <p>Передать контекст анализа сотруднику БКС и выбрать удобное время.</p>
+            </button>
+            <button class="card" data-flow="priceAgent">
+              <div class="card-head"><h3>Подготовить ценовой сценарий</h3><span>→</span></div>
+              <p>Заранее определить условие докупки или частичной продажи.</p>
+            </button>
+            <button class="button-secondary button-block" data-flow="home">Вернуться на главную</button>
+          </div>`
+      },
+
+      briefingHome: {
+        title: "Рынки для меня",
+        goal: "Показать рынок как персональную витрину, а не общий каталог продуктов.",
+        ai: "Связывает рыночные события, продукты и идеи с активами клиента.",
+        action: "Открыть влияние события или релевантную идею.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Рынки")}
+            <div class="card emphasis">
+              <span class="tag">Важно для вас</span>
+              <h2 style="margin-top:8px">Ставка влияет на 34% портфеля</h2>
+              <p>Длинные облигации и фонды облигаций чувствительны к решению ЦБ. AI собрал короткое объяснение и сценарии.</p>
+            </div>
+            <h2 class="section-title">Влияет на портфель</h2>
+            <button class="card warning" data-next>
+              <div class="card-head"><h3>Решение ЦБ и облигации</h3><span class="tag">Высокое влияние</span></div>
+              <p>34% портфеля связано с процентными ставками. Что изменилось и чего ждать дальше.</p>
+            </button>
+            <button class="card" data-flow="cashEvent">
+              <div class="card-head"><h3>Фонд денежного рынка</h3><span class="tag">свободный остаток</span></div>
+              <p>Показан из-за 126 000 ₽ без движения и низкой доли ликвидности.</p>
+            </button>
+            <h2 class="section-title">Общее состояние рынка</h2>
+            <div class="card">
+              <h3>Главное за утро</h3>
+              <p>Индекс без сильного движения · нефть +0,8% · ожидаются две корпоративные отчетности.</p>
+            </div>
+            <button class="button-secondary button-block" data-next>Разобрать влияние</button>
+          </div>
+          ${bottomNav()}`
+      },
+
+      briefingEvent: {
+        title: "Событие и влияние",
+        goal: "Объяснить макрособытие через конкретные активы клиента.",
+        ai: "Строит персональную карту влияния и сценарии без обещания результата.",
+        action: "Углубиться в позиции или поставить событие на наблюдение.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Решение ЦБ")}
+            <div class="card emphasis">
+              <span class="tag">Что это значит для вас</span>
+              <h2 style="margin-top:8px">Потенциально позитивно для длинных облигаций</h2>
+              <p>При снижении ставок цена части ваших облигаций может вырасти. Эффект зависит от темпа решений и ожиданий рынка.</p>
+            </div>
+            <h2 class="section-title">Затронутые позиции</h2>
+            <div class="card">
+              <div class="metric-row"><span>ОФЗ 26238</span><strong>8,2% портфеля</strong></div>
+              <div class="metric-row"><span>Фонд облигаций</span><strong>12,7%</strong></div>
+              <div class="metric-row"><span>Корп. облигации</span><strong>13,1%</strong></div>
+            </div>
+            <h2 class="section-title">Сценарии</h2>
+            <div class="card">
+              <h3>Ставка снижается быстрее ожиданий</h3>
+              <p>Потенциальный рост цены длинных бумаг, но возможна повышенная волатильность.</p>
+            </div>
+            <div class="card">
+              <h3>Ставка остается высокой</h3>
+              <p>Купонный поток сохраняется, ценовой эффект может быть ограничен.</p>
+            </div>
+            <button class="button-primary button-block" data-next>Следить за изменениями</button>
+          </div>`
+      },
+
+      briefingSettings: {
+        title: "Настройка брифинга",
+        goal: "Дать клиенту контроль над темами, частотой и уровнем детализации.",
+        ai: "Предлагает настройки на основании портфеля, но не меняет их скрытно.",
+        action: "Сохранить постоянное персональное summary.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Настроить брифинг")}
+            <div class="field">
+              <label>Когда присылать</label>
+              <div class="select">По будням · 08:30</div>
+            </div>
+            <div class="field">
+              <label>Длительность</label>
+              <div class="segmented">
+                <button class="segment">1 мин</button>
+                <button class="segment active">3 мин</button>
+                <button class="segment">Подробно</button>
+              </div>
+            </div>
+            <div class="field">
+              <label>Приоритет</label>
+              <div class="card">
+                <div class="metric-row"><span>Мои позиции</span><strong>Всегда</strong></div>
+                <div class="metric-row"><span>Макроэкономика</span><strong>Если влияет</strong></div>
+                <div class="metric-row"><span>Обсуждения рынка</span><strong>Существенные</strong></div>
+                <div class="metric-row"><span>Идеи БКС</span><strong>Релевантные цели</strong></div>
+              </div>
+            </div>
+            <div class="card success">
+              <h3>Защита от шума</h3>
+              <p>Вне расписания агент уведомит только о событиях высокого влияния.</p>
+            </div>
+            <button class="button-primary button-block" data-next>Сохранить и запустить</button>
+          </div>`
+      },
+
+      briefingSuccess: {
+        title: "Агент запущен",
+        goal: "Подтвердить правила и дать быстрый доступ к управлению агентом.",
+        ai: "Фиксирует поручение и показывает следующую дату запуска.",
+        action: "Перейти к агенту или вернуться на главный экран.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Готово", true, "×")}
+            <div class="empty-state">
+              <div>
+                <div style="font-size:52px;margin-bottom:14px">✓</div>
+                <h1 style="font-size:24px;margin:0">Брифинг настроен</h1>
+                <p>Следующий выпуск — завтра в 08:30. Вне расписания придут только события высокого влияния.</p>
+                <button class="button-primary button-block" data-flow="agents">Открыть мои агенты</button>
+                <button class="button-secondary button-block" style="margin-top:8px" data-flow="home">На главную</button>
+              </div>
+            </div>
+          </div>`
+      },
+
+      agentsHome: {
+        title: "Центр агентов",
+        goal: "Одним входом показать активных агентов, базовый набор и создание уникального.",
+        ai: "Предлагает базовых агентов по портфелю, сохраняя явный выбор клиента.",
+        action: "Подключить несколько базовых агентов или создать своего.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Агенты", true, "•••")}
+            <div class="card success">
+              <div class="card-head"><h3>2 агента активны</h3><span class="tag">Все штатно</span></div>
+              <p>Брифинг подготовлен · одна позиция требует внимания.</p>
+            </div>
+            <h2 class="section-title">Доступны всем клиентам</h2>
+            <div class="agent-grid">
+              <button class="agent-tile selected" data-next>
+                <span class="agent-symbol">☀</span><span class="agent-check">✓</span>
+                <h3>Утренний брифинг</h3><p>Главное по рынку и вашим активам.</p>
+              </button>
+              <button class="agent-tile">
+                <span class="agent-symbol">!</span><span class="agent-check">+</span>
+                <h3>Контроль портфеля</h3><p>Концентрация, риск и отклонения.</p>
+              </button>
+              <button class="agent-tile">
+                <span class="agent-symbol">▣</span><span class="agent-check">+</span>
+                <h3>Календарь</h3><p>Дивиденды, купоны и отчетность.</p>
+              </button>
+              <button class="agent-tile">
+                <span class="agent-symbol">₽</span><span class="agent-check">+</span>
+                <h3>Свободный остаток</h3><p>Деньги без движения и варианты.</p>
+              </button>
+            </div>
+            <button class="button-primary button-block" style="margin-top:12px" data-next>Выбрать базовых агентов</button>
+            <button class="button-secondary button-block" style="margin-top:8px" data-agent-custom>Создать уникального</button>
+          </div>
+          ${bottomNav()}`
+      },
+
+      agentCatalog: {
+        title: "Выбор агентов",
+        goal: "Позволить активировать один или несколько готовых агентов за один проход.",
+        ai: "Подсвечивает рекомендованный набор, но не активирует его без согласия.",
+        action: "Выбрать агентов и перейти к общей настройке.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Выберите агентов")}
+            <div class="card success">
+              <h3>Рекомендовано для вашего портфеля</h3>
+              <p>Можно подключить несколько агентов одновременно, а настройки изменить позже.</p>
+            </div>
+            <div class="agent-grid">
+              <button class="agent-tile selected"><span class="agent-symbol">☀</span><span class="agent-check">✓</span><h3>Брифинг</h3><p>Каждое утро, 3 минуты.</p></button>
+              <button class="agent-tile selected"><span class="agent-symbol">!</span><span class="agent-check">✓</span><h3>Контроль портфеля</h3><p>Только значимые отклонения.</p></button>
+              <button class="agent-tile selected"><span class="agent-symbol">▣</span><span class="agent-check">✓</span><h3>Календарь</h3><p>Все события по позициям.</p></button>
+              <button class="agent-tile"><span class="agent-symbol">₽</span><span class="agent-check">+</span><h3>Свободный остаток</h3><p>От 100 000 ₽ без движения.</p></button>
+            </div>
+            <div class="sticky-action">
+              <button class="button-primary button-block" data-next>Настроить выбранные · 3</button>
+            </div>
+          </div>`
+      },
+
+      agentBatchSetup: {
+        title: "Общая настройка",
+        goal: "Свести активацию нескольких агентов к небольшому числу понятных решений.",
+        ai: "Предлагает безопасные значения частоты и уровня шума.",
+        action: "Активировать выбранный набор.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Настройка · 3 агента")}
+            <div class="field"><label>Канал</label><div class="select">В приложении · push для важного</div></div>
+            <div class="field"><label>Уровень шума</label><div class="segmented"><button class="segment">Все</button><button class="segment active">Важное</button><button class="segment">Критичное</button></div></div>
+            <div class="card">
+              <div class="metric-row"><span>Утренний брифинг</span><strong>08:30</strong></div>
+              <div class="metric-row"><span>Контроль портфеля</span><strong>При событии</strong></div>
+              <div class="metric-row"><span>Календарь</span><strong>За 3 дня</strong></div>
+            </div>
+            <div class="card success">
+              <h3>Только наблюдение и предложения</h3>
+              <p>Ни один из выбранных агентов не может совершать финансовые операции.</p>
+            </div>
+            <button class="button-primary button-block" data-next>Активировать 3 агентов</button>
+          </div>`
+      },
+
+      agentBatchSuccess: {
+        title: "Агенты активированы",
+        goal: "Подтвердить пакетную активацию и сохранить простой путь к созданию уникального агента.",
+        ai: "Фиксирует поручения и показывает ближайшие срабатывания.",
+        action: "Вернуться в центр или создать уникального агента.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Агенты активны", true, "×")}
+            <div class="empty-state">
+              <div>
+                <div style="font-size:52px;margin-bottom:14px">◎</div>
+                <h1 style="font-size:24px;margin:0">Три агента работают</h1>
+                <p>Первый брифинг — завтра в 08:30. Календарь и контроль портфеля уже проверяют события.</p>
+                <button class="button-primary button-block" data-agent-custom>Создать уникального</button>
+                <button class="button-secondary button-block" style="margin-top:8px" data-flow="home">На главную</button>
+              </div>
+            </div>
+          </div>`
+      },
+
+      agentPrompt: {
+        title: "Новое поручение",
+        goal: "Позволить описать постоянную задачу естественным языком.",
+        ai: "Преобразует свободный запрос в формальные и проверяемые правила.",
+        action: "Отправить описание задачи на разбор.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Создать агента")}
+            <div class="ai-panel">
+              <div class="ai-mark"><span class="ai-dot"></span> Опишите поручение</div>
+              <div class="input" style="min-height:100px">Следи за моими крупными позициями и сообщай, если доля одной из них станет больше 15% портфеля.</div>
+            </div>
+            <h2 class="section-title">Примеры</h2>
+            <div class="suggestions">
+              <button class="suggestion">Каждое утро рассказывай, что пишут о моих активах</button>
+              <button class="suggestion">Следи за свободным остатком больше 100 000 ₽</button>
+              <button class="suggestion">Напоминай о дивидендах, купонах и отчетности</button>
+              <button class="suggestion">Готовь покупку, если цена снизится на заданный процент</button>
+            </div>
+            <div class="card" style="margin-top:16px">
+              <h3>Дальше</h3>
+              <p>AI уточнит параметры и покажет точные правила до запуска.</p>
+            </div>
+            <button class="button-primary button-block" data-next>Продолжить</button>
+          </div>`
+      },
+
+      agentRules: {
+        title: "Правила агента",
+        goal: "Сделать интерпретацию запроса прозрачной и редактируемой.",
+        ai: "Предлагает порог и область наблюдения на основании запроса.",
+        action: "Подтвердить правила и перейти к полномочиям.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Проверьте правила")}
+            <div class="card emphasis">
+              <span class="tag">AI собрал поручение</span>
+              <div class="metric-row"><span>Следить</span><strong>Все позиции</strong></div>
+              <div class="metric-row"><span>Триггер</span><strong>Доля выше 15%</strong></div>
+              <div class="metric-row"><span>Проверка</span><strong>После каждой сделки</strong></div>
+              <div class="metric-row"><span>Срок</span><strong>Без ограничения</strong></div>
+            </div>
+            <div class="field">
+              <label>Что считать существенным изменением</label>
+              <div class="select">Изменение доли на 1 п.п. и более</div>
+            </div>
+            <div class="field">
+              <label>Как сообщать</label>
+              <div class="select">В приложении · уведомление</div>
+            </div>
+            <div class="card warning">
+              <h3>Сейчас под условие подходит акция X</h3>
+              <p>Ее доля составляет 18,4%. После запуска агент сразу подготовит первый отчет.</p>
+            </div>
+            <button class="button-primary button-block" data-next>Правила верны</button>
+          </div>`
+      },
+
+      agentPermissions: {
+        title: "Полномочия агента",
+        goal: "Явно определить, что агент может делать после срабатывания.",
+        ai: "Объясняет уровни автономности и рекомендует минимально необходимые права.",
+        action: "Выбрать уровень и запустить агента.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Что может агент")}
+            <button class="card">
+              <div class="card-head"><h3>Только уведомлять</h3><span>○</span></div>
+              <p>Сообщить о превышении доли и показать причину.</p>
+            </button>
+            <button class="card emphasis">
+              <div class="card-head"><h3>Предлагать решение</h3><span>●</span></div>
+              <p>Объяснить ситуацию и подготовить варианты. Любая операция — только после подтверждения.</p>
+              <div style="margin-top:8px"><span class="tag">Рекомендуется</span></div>
+            </button>
+            <button class="card">
+              <div class="card-head"><h3>Выполнять по правилам</h3><span>○</span></div>
+              <p>Для этого сценария недоступно без отдельной формализованной стратегии и лимитов.</p>
+            </button>
+            <div class="card success">
+              <h3>Контроль остается у вас</h3>
+              <p>Правила можно изменить, агент — приостановить, а историю решений — посмотреть в журнале.</p>
+            </div>
+            <button class="button-primary button-block" data-next>Запустить агента</button>
+          </div>`
+      },
+
+      agentCreated: {
+        title: "Карточка агента",
+        goal: "Показать текущий статус, первое срабатывание и доступные средства контроля.",
+        ai: "Ведет журнал наблюдений и объясняет каждое срабатывание.",
+        action: "Открыть первый отчет или приостановить агента.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Крупные позиции")}
+            <div class="card success">
+              <div class="card-head"><h3>Агент активен</h3><span class="tag">Наблюдает</span></div>
+              <p>Все позиции · порог 15% · предлагает решения · операции только после подтверждения.</p>
+            </div>
+            <button class="card warning" data-flow="positionControl">
+              <div class="card-head"><h3>Первое срабатывание</h3><span>→</span></div>
+              <p>Акции X — 18,4% портфеля. Доля выше установленного порога.</p>
+            </button>
+            <h2 class="section-title">Журнал</h2>
+            <ul class="timeline">
+              <li><strong>Агент запущен</strong><span>Сегодня · правила подтверждены клиентом</span></li>
+              <li><strong>Портфель проверен</strong><span>Обнаружена одна позиция выше порога</span></li>
+              <li><strong>Отчет подготовлен</strong><span>Финансовых действий не совершалось</span></li>
+            </ul>
+            <div class="action-row">
+              <button class="button-secondary">Изменить</button>
+              <button class="button-danger">Приостановить</button>
+            </div>
+          </div>
+          ${bottomNav()}`
+      },
+
+      pricePrompt: {
+        title: "Ценовой сценарий",
+        goal: "Превратить бытовую формулировку в понятное торговое условие.",
+        ai: "Извлекает инструмент, изменение цены, объем и тип действия.",
+        action: "Проверить распознанные параметры.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Ценовой сценарий")}
+            <div class="ai-panel">
+              <div class="ai-mark"><span class="ai-dot"></span> Опишите условие</div>
+              <div class="input" style="min-height:110px">Если акции X снизятся на 7% от текущей цены, подготовь покупку на 30 000 ₽.</div>
+            </div>
+            <div class="card">
+              <h3>AI распознал</h3>
+              <div class="metric-row"><span>Инструмент</span><strong>Акции X</strong></div>
+              <div class="metric-row"><span>Событие</span><strong>Снижение на 7%</strong></div>
+              <div class="metric-row"><span>Сумма</span><strong>30 000 ₽</strong></div>
+              <div class="metric-row"><span>Действие</span><strong>Подготовить покупку</strong></div>
+            </div>
+            <button class="button-primary button-block" data-next>Настроить параметры</button>
+          </div>`
+      },
+
+      priceRules: {
+        title: "Параметры условия",
+        goal: "Зафиксировать точную базу расчета, срок и способ исполнения.",
+        ai: "Проверяет непротиворечивость параметров и показывает достижимую цену.",
+        action: "Перейти к оценке влияния на портфель.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Условие покупки")}
+            <div class="field">
+              <label>Базовая цена</label>
+              <div class="input">Текущая · 2 840 ₽</div>
+            </div>
+            <div class="field">
+              <label>Триггер</label>
+              <div class="input">−7% · цена 2 641 ₽ или ниже</div>
+            </div>
+            <div class="field">
+              <label>Сумма покупки</label>
+              <div class="input">30 000 ₽ · примерно 11 акций</div>
+            </div>
+            <div class="field">
+              <label>Срок наблюдения</label>
+              <div class="select">30 дней</div>
+            </div>
+            <div class="field">
+              <label>Режим</label>
+              <div class="segmented">
+                <button class="segment">Уведомить</button>
+                <button class="segment active">Подготовить</button>
+                <button class="segment">Выставить</button>
+              </div>
+            </div>
+            <div class="card success">
+              <h3>Операция не пройдет автоматически</h3>
+              <p>При срабатывании вы получите готовую заявку и подтвердите ее по актуальной цене.</p>
+            </div>
+            <button class="button-primary button-block" data-next>Проверить влияние</button>
+          </div>`
+      },
+
+      priceImpact: {
+        title: "Влияние на портфель",
+        goal: "Показать последствия покупки до запуска наблюдения.",
+        ai: "Рассчитывает изменение концентрации, доступного остатка и соответствие риск-профилю.",
+        action: "Подтвердить правила агента.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Проверка сценария")}
+            <div class="card warning">
+              <h3>Доля позиции станет еще выше</h3>
+              <p>При исполнении на 30 000 ₽ доля акций X вырастет с 18,4% до примерно 18,6%.</p>
+            </div>
+            <div class="card">
+              <div class="metric-row"><span>Свободный остаток</span><strong>126 000 → 96 000 ₽</strong></div>
+              <div class="metric-row"><span>Риск-профиль</span><strong>Соответствует</strong></div>
+              <div class="metric-row"><span>Концентрация</span><strong style="color:var(--warning)">Выше ориентира</strong></div>
+              <div class="metric-row"><span>Комиссия</span><strong>Будет рассчитана</strong></div>
+            </div>
+            <div class="card">
+              <h3>Альтернатива</h3>
+              <p>Уменьшить сумму до 15 000 ₽ или сначала изучить влияние высокой концентрации.</p>
+            </div>
+            <div class="action-row">
+              <button class="button-secondary">Изменить сумму</button>
+              <button class="button-primary" data-next>Продолжить</button>
+            </div>
+          </div>`
+      },
+
+      priceConfirm: {
+        title: "Подтверждение агента",
+        goal: "Получить информированное согласие на наблюдение и подготовку заявки.",
+        ai: "Формирует финальную карточку правил без скрытых параметров.",
+        action: "Запустить ценовой агент.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Запустить агента")}
+            <div class="card emphasis">
+              <div class="metric-row"><span>Следить за</span><strong>Акции X</strong></div>
+              <div class="metric-row"><span>Условие</span><strong>2 641 ₽ или ниже</strong></div>
+              <div class="metric-row"><span>Сумма</span><strong>30 000 ₽</strong></div>
+              <div class="metric-row"><span>Полномочие</span><strong>Подготовить заявку</strong></div>
+              <div class="metric-row"><span>Срок</span><strong>30 дней</strong></div>
+            </div>
+            <div class="card success">
+              <h3>Вы сохраните контроль</h3>
+              <p>Агент не купит актив самостоятельно. Цена и параметры будут повторно проверены перед подтверждением заявки.</p>
+            </div>
+            <div class="card">
+              <h3>Когда агент не сработает</h3>
+              <p>Недостаточно денег, торги приостановлены, инструмент недоступен или условие нарушает установленные ограничения.</p>
+            </div>
+            <button class="button-primary button-block" data-next>Подтвердить и запустить</button>
+          </div>`
+      },
+
+      priceActive: {
+        title: "Агент наблюдает",
+        goal: "Показать прогресс до триггера и возможность изменить или остановить поручение.",
+        ai: "Следит за условием и не создает лишних уведомлений.",
+        action: "Изменить, приостановить или дождаться срабатывания.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Докупка акций X")}
+            <div class="card success">
+              <div class="card-head"><h3>Агент наблюдает</h3><span class="tag">Активен</span></div>
+              <p>Операций не совершалось.</p>
+            </div>
+            <div class="hero-value">
+              <p class="eyebrow">Текущая цена</p>
+              <p class="big-number" style="font-size:30px">2 702 ₽</p>
+              <p class="delta negative">До триггера еще −2,2%</p>
+            </div>
+            <div class="card" style="margin-top:16px">
+              <div class="metric-row"><span>Цена триггера</span><strong>2 641 ₽</strong></div>
+              <div class="metric-row"><span>Подготовить на</span><strong>30 000 ₽</strong></div>
+              <div class="metric-row"><span>Осталось</span><strong>24 дня</strong></div>
+            </div>
+            <h2 class="section-title">Журнал</h2>
+            <ul class="timeline">
+              <li><strong>Цена проверена</strong><span>Сегодня · условие не наступило</span></li>
+              <li><strong>Агент запущен</strong><span>Вчера · правила подтверждены</span></li>
+            </ul>
+            <div class="action-row">
+              <button class="button-secondary">Изменить</button>
+              <button class="button-danger">Остановить</button>
+            </div>
+          </div>
+          ${bottomNav()}`
+      },
+
+      positionAlert: {
+        title: "Срабатывание контроля",
+        goal: "Объяснить, почему алгоритм считает портфель отклоненным от целевого состояния.",
+        ai: "Связывает перевес позиции с Здоровьем портфеля, классами потребностей и целевыми долями.",
+        action: "Изучить влияние или запустить симуляцию ребалансировки.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Здоровье портфеля")}
+            <div class="event-zone">
+              <span class="zone-label">Событие алгоритма</span>
+              <span class="tag">Здоровье 82/100</span>
+              <h2 style="margin-top:8px">Портфель отклонился от целевого состояния</h2>
+              <p>Акции X выросли до 18,4% капитала. Класс «Инвестиции» стал выше целевой доли на 6 п.п., а «Кошелек» ниже цели на 3 п.п.</p>
+            </div>
+            <div class="card">
+              <div class="metric-row"><span>Целевой портфель</span><strong>Отклонение 6%</strong></div>
+              <div class="metric-row"><span>Кошелек</span><strong>7% / цель 10%</strong></div>
+              <div class="metric-row"><span>Инвестиции</span><strong>56% / цель 50%</strong></div>
+              <div class="metric-row"><span>Акции X</span><strong>18,4% / порог 15%</strong></div>
+            </div>
+            <div class="decision-zone">
+              <span class="zone-label">Доступные варианты</span>
+              <h3>Как привести портфель к цели?</h3>
+              <p>Алгоритм предлагает частично снизить перевес и направить сумму в недостающие классы потребностей.</p>
+              <div class="action-chips">
+                <button class="action-chip primary" data-next>Симулировать ребалансировку</button>
+                <button class="action-chip">Оставить до 20%</button>
+                <button class="action-chip" data-flow="priceAgent">Пополнить недостающий класс</button>
+                <button class="action-chip">Спросить советника</button>
+              </div>
+            </div>
+            <button class="button-secondary button-block" style="margin-top:10px">Изменить целевые доли</button>
+          </div>`
+      },
+
+      positionSimulation: {
+        title: "Симуляция ребалансировки",
+        goal: "Показать измеримые последствия ребалансировки до подготовки заявки.",
+        ai: "Рассчитывает необходимый объем и влияние на классы потребностей.",
+        action: "Подготовить заявку или вернуться к наблюдению.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Ребалансировка")}
+            <div class="card emphasis">
+              <p class="eyebrow">Пакетная ребалансировка</p>
+              <p class="big-number" style="font-size:28px">425 000 ₽</p>
+              <p>Часть суммы освобождается из перевеса позиции и распределяется по недостающим классам потребностей.</p>
+            </div>
+            <div class="card">
+              <div class="metric-row"><span>Здоровье портфеля</span><strong>82 → 91</strong></div>
+              <div class="metric-row"><span>Акции X</span><strong>18,4% → 15%</strong></div>
+              <div class="metric-row"><span>Кошелек</span><strong>7% → 10%</strong></div>
+              <div class="metric-row"><span>Инвестиции</span><strong>56% → 50%</strong></div>
+            </div>
+            <div class="card warning">
+              <h3>Почему именно так</h3>
+              <p>Ребалансировка возвращает портфель к целевому состоянию и снижает риск зависимости от одной позиции. Фактические цены будут пересчитаны перед подтверждением.</p>
+            </div>
+            <div class="action-row">
+              <button class="button-secondary">Оставить как есть</button>
+              <button class="button-primary" data-next>Подготовить заявку</button>
+            </div>
+          </div>`
+      },
+
+      positionOrder: {
+        title: "Подготовленная заявка",
+        goal: "Отделить AI-подготовку от юридически значимого подтверждения операции.",
+        ai: "Заполняет пакетный черновик и повторно проверяет ограничения перед подтверждением.",
+        action: "Проверить данные и перейти к стандартному подтверждению операций.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Пакетная заявка")}
+            <div class="card emphasis">
+              <div class="metric-row"><span>Цель</span><strong>Вернуть портфель к состоянию 91/100</strong></div>
+              <div class="metric-row"><span>Продать</span><strong>Акции X · ≈425 000 ₽</strong></div>
+              <div class="metric-row"><span>Направить в Кошелек</span><strong>≈260 000 ₽</strong></div>
+              <div class="metric-row"><span>Направить в Эксперименты</span><strong>≈165 000 ₽</strong></div>
+            </div>
+            <div class="card success">
+              <h3>После предполагаемого исполнения</h3>
+              <p>Доля позиции снизится до 15%, ликвидная часть вернется к целевому уровню, общий риск останется в рамках инвестпрофиля.</p>
+            </div>
+            <div class="card">
+              <h3>Перед подтверждением</h3>
+              <p>Приложение покажет актуальные цены, комиссии, налоговый контекст и состав каждой операции пакета.</p>
+            </div>
+            <button class="button-primary button-block">Перейти к подтверждению</button>
+            <button class="button-secondary button-block" style="margin-top:8px" data-flow="agents">Сохранить без отправки</button>
+          </div>`
+      },
+
+      newClientHome: {
+        title: "Новый клиент",
+        goal: "Показать старт без активов: приложение ведет к первому осознанному шагу, а не показывает пустой портфель.",
+        ai: "Определяет состояние клиента и предлагает безопасный маршрут: риск-профиль, первый портфель или перенос активов.",
+        action: "Выбрать первый шаг.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            <div class="screen-header">
+              <button class="profile-button" aria-label="Профиль">АК</button>
+              <div class="health-pill">Старт <small>0 активов</small></div>
+              <button class="icon-button" aria-label="Уведомления">🔔</button>
+            </div>
+            <section class="hero-value portfolio-hero" style="border-bottom:0">
+              <p class="eyebrow">Портфель еще не собран</p>
+              <p class="big-number">0 ₽</p>
+              <div class="result-chip" style="border-color:var(--line-dark);background:#f8f8f8;color:var(--muted)">первый шаг не выбран</div>
+            </section>
+            <div class="card emphasis">
+              <span class="tag">Финс</span>
+              <h2 style="margin-top:8px">Начнем с цели и риска</h2>
+              <p>Я помогу собрать первый портфель: уточню горизонт, допустимый риск и сумму старта.</p>
+            </div>
+            <button class="card" data-next><div class="card-head"><h3>Пройти риск-профиль</h3><span>→</span></div><p>5 вопросов, чтобы не предлагать неподходящие инструменты.</p></button>
+            <button class="card"><div class="card-head"><h3>Собрать первый портфель</h3><span>→</span></div><p>Стартовый набор после риск-профиля и цели.</p></button>
+            <button class="card" data-flow="externalAssets"><div class="card-head"><h3>У меня есть активы у другого брокера</h3><span>→</span></div><p>Учтем внешний портфель перед рекомендациями.</p></button>
+          </div>`
+      },
+
+      newClientRisk: {
+        title: "Первый портфель",
+        goal: "Показать, что AI собирает минимальный контекст перед предложением продукта.",
+        ai: "Переводит ответы клиента в ограничения для первого портфеля.",
+        action: "Сформировать первый вариант.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Первый портфель")}
+            <div class="card emphasis">
+              <span class="tag">Контекст</span>
+              <h2 style="margin-top:8px">Нужно уточнить 3 вещи</h2>
+              <p>Срок, сумма старта и комфортная просадка. После этого можно показать первый вариант портфеля.</p>
+            </div>
+            <div class="field"><label>Срок</label><div class="segmented"><button class="segment">до года</button><button class="segment active">1-3 года</button><button class="segment">3+ года</button></div></div>
+            <div class="field"><label>Стартовая сумма</label><div class="input">100 000 ₽</div></div>
+            <div class="field"><label>Просадка</label><div class="select">до 10% временно допустимо</div></div>
+            <div class="card success"><h3>Ограничение AI</h3><p>До риск-профиля приложение не показывает агрессивные идеи и сложные продукты.</p></div>
+            <button class="button-primary button-block">Показать первый портфель</button>
+          </div>`
+      },
+
+      dailySummarySetup: {
+        title: "Агент сводки",
+        goal: "Показать агента как регулярное поручение, а не абстрактную сущность.",
+        ai: "Превращает естественную фразу в правила регулярного дайджеста.",
+        action: "Подтвердить правила ежедневной сводки.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Ежедневная сводка")}
+            <div class="ai-panel">
+              <div class="ai-mark"><span class="ai-dot"></span> Запрос</div>
+              <div class="input" style="min-height:96px">Каждый день присылай короткую сводку: что важно по рынку и моему портфелю.</div>
+            </div>
+            <div class="card">
+              <h3>AI настроил правила</h3>
+              <div class="metric-row"><span>Частота</span><strong>Будни · 08:30</strong></div>
+              <div class="metric-row"><span>Фокус</span><strong>Мои активы</strong></div>
+              <div class="metric-row"><span>Шум</span><strong>Только значимое</strong></div>
+              <div class="metric-row"><span>Вне расписания</span><strong>Критичные события</strong></div>
+            </div>
+            <button class="button-primary button-block" data-next>Запустить агента</button>
+          </div>`
+      },
+
+      dailySummaryResult: {
+        title: "Результат агента",
+        goal: "Показать, как работа агента возвращается на главный экран.",
+        ai: "Собирает краткий дайджест и предлагает раскрыть только важные детали.",
+        action: "Открыть подробности или изменить правила.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Сегодня в 08:30")}
+            <div class="card emphasis">
+              <span class="tag">Дайджест Финса</span>
+              <h2 style="margin-top:8px">2 события по портфелю, 1 идея</h2>
+              <p>Ставка влияет на облигации, рубль снизил валютную часть, свободные 126 000 ₽ можно временно разместить.</p>
+            </div>
+            <button class="card" data-flow="briefing"><div class="card-head"><h3>Открыть рыночное влияние</h3><span>→</span></div><p>Что значит решение ЦБ для ваших бумаг.</p></button>
+            <button class="card" data-flow="cashEvent"><div class="card-head"><h3>Свободный остаток</h3><span>→</span></div><p>Показать варианты без давления на покупку.</p></button>
+            <button class="button-secondary button-block">Изменить правила сводки</button>
+          </div>`
+      },
+
+      documentRequest: {
+        title: "Документ через AI",
+        goal: "Показать сервисный сценарий, где AI сокращает операционный путь.",
+        ai: "Понимает тип документа и период, а при необходимости уточняет параметры.",
+        action: "Подготовить запрос на документ.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Документы")}
+            <div class="ai-panel">
+              <div class="ai-mark"><span class="ai-dot"></span> Запрос</div>
+              <div class="input" style="min-height:96px">Закажи брокерский отчет за 2023 год.</div>
+            </div>
+            <div class="card">
+              <h3>AI понял запрос</h3>
+              <div class="metric-row"><span>Документ</span><strong>Брокерский отчет</strong></div>
+              <div class="metric-row"><span>Период</span><strong>2023 год</strong></div>
+              <div class="metric-row"><span>Счет</span><strong>Все счета</strong></div>
+            </div>
+            <button class="button-primary button-block" data-next>Сформировать запрос</button>
+          </div>`
+      },
+
+      documentReady: {
+        title: "Документ готов",
+        goal: "Показать честный результат и передачу контекста без повторного объяснения.",
+        ai: "Проверяет наличие данных и объясняет следующий шаг.",
+        action: "Скачать документ или передать специалисту.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Брокерский отчет")}
+            <div class="card success"><h3>Отчет найден</h3><p>Период: 01.01.2023-31.12.2023. Документ можно скачать или отправить на почту.</p></div>
+            <div class="card"><h3>Если данных нет</h3><p>AI покажет нулевой результат и объяснит, почему отчет пустой, вместо перевода клиента по кругу.</p></div>
+            <button class="button-primary button-block">Скачать PDF</button>
+            <button class="button-secondary button-block" style="margin-top:8px">Передать специалисту с контекстом</button>
+          </div>`
+      },
+
+      cashEvent: {
+        title: "Свободный остаток",
+        goal: "Показать деликатную реакцию на деньги без движения.",
+        ai: "Видит остаток и предлагает варианты без навязчивой продажи.",
+        action: "Выбрать, что сделать с остатком.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Свободные деньги")}
+            <div class="card emphasis">
+              <span class="tag">Финс заметил</span>
+              <h2 style="margin-top:8px">126 000 ₽ лежат без движения</h2>
+              <p>Можно оставить как резерв, пополнить цель или временно разместить в низкорисковом инструменте.</p>
+            </div>
+            <div class="action-chips">
+              <button class="action-chip primary" data-next>Показать варианты</button>
+              <button class="action-chip">Оставить резерв</button>
+              <button class="action-chip">Напомнить позже</button>
+            </div>
+            <div class="card"><h3>Почему это не продажа</h3><p>AI показывает компромиссы и не готовит операцию без подтверждения.</p></div>
+          </div>`
+      },
+
+      cashOptions: {
+        title: "Варианты остатка",
+        goal: "Показать выбор без давления и с объяснением последствий.",
+        ai: "Сравнивает варианты по риску, ликвидности и цели клиента.",
+        action: "Подготовить выбранный вариант.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Что сделать")}
+            <button class="card"><div class="card-head"><h3>Оставить резерв</h3><span class="tag">0 риска</span></div><p>Деньги доступны сразу, доходность не меняется.</p></button>
+            <button class="card emphasis"><div class="card-head"><h3>Фонд денежного рынка</h3><span class="tag">ликвидно</span></div><p>Возможный доход при низком риске, подходит для временного размещения.</p></button>
+            <button class="card"><div class="card-head"><h3>Пополнить целевой портфель</h3><span class="tag">баланс</span></div><p>Распределить сумму по текущим недобранным классам.</p></button>
+            <button class="button-primary button-block">Подготовить, не отправлять</button>
+          </div>`
+      },
+
+      externalAssetsIntro: {
+        title: "Активы вне БКС",
+        goal: "Показать стратегический сценарий консолидации капитала.",
+        ai: "Объясняет ценность общей картины и запрашивает только нужные данные.",
+        action: "Добавить внешний портфель.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Весь портфель")}
+            <div class="card emphasis">
+              <span class="tag">Новый контекст</span>
+              <h2 style="margin-top:8px">Учитывать активы у другого брокера?</h2>
+              <p>Так Финс увидит общую концентрацию, риск и свободные деньги, а рекомендации не будут строиться только на БКС.</p>
+            </div>
+            <button class="card" data-next><div class="card-head"><h3>Загрузить отчет</h3><span>📎</span></div><p>AI разберет состав активов и покажет, что учел.</p></button>
+            <button class="card"><div class="card-head"><h3>Добавить вручную</h3><span>→</span></div><p>Подходит, если нужно быстро указать крупные позиции.</p></button>
+          </div>`
+      },
+
+      externalAssetsResult: {
+        title: "Общий портфель",
+        goal: "Показать, как внешний портфель меняет рекомендации.",
+        ai: "Собирает единую картину и выявляет концентрацию вне БКС.",
+        action: "Посмотреть общий риск или предложения.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Общий портфель")}
+            <div class="hero-value portfolio-hero">
+              <p class="eyebrow">БКС + внешний брокер</p>
+              <p class="big-number">18 920 000 ₽</p>
+              <div class="result-chip" style="border-color:var(--warning);background:var(--warning-soft);color:#7a4b00">концентрация выше нормы</div>
+            </div>
+            <div class="card warning"><h3>AI нашел пересечение</h3><p>Акции X есть в БКС и у другого брокера. Общая доля позиции — 24%, выше целевого ориентира.</p></div>
+            <button class="card" data-flow="portfolio"><div class="card-head"><h3>Посмотреть структуру</h3><span>→</span></div><p>Общий состав активов по всем источникам.</p></button>
+            <button class="card" data-flow="positionControl"><div class="card-head"><h3>Снизить концентрацию</h3><span>→</span></div><p>Подготовить сценарий без автоматической операции.</p></button>
+          </div>`
+      },
+
+      portfolio: {
+        title: "Структура портфеля",
+        goal: "Дать последовательное раскрытие общей суммы до счетов, классов и инструментов.",
+        ai: "Подсвечивает аномалии и позволяет спросить о любом разрезе.",
+        action: "Переключить разрез или открыть позицию.",
+        html: () => `
+          <div class="screen">
+            ${status}
+            ${header("Портфель")}
+            <div class="hero-value portfolio-hero">
+              <button class="account-selector" data-account-toggle>Все счета <span>⌄</span></button>
+              <p class="big-number">12 480 650 ₽</p>
+              <p class="delta">+1 240 000 ₽ за год</p>
+              <div class="portfolio-pager" aria-label="Портфели">
+                <span class="active"></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+            <div class="segmented" style="margin-top:14px">
+              <button class="segment active" data-view-switch="assets">Активы</button>
+              <button class="segment" data-view-switch="needs">Потребности</button>
+            </div>
+            <div class="card emphasis">
+              <div class="card-head"><h3>Здоровье портфеля</h3><span class="tag">82/100</span></div>
+              <p>Портфель близок к целевому состоянию, но есть перевес в инвестиционной части и недостаток ликвидности.</p>
+            </div>
+            <div class="view-panel">
+              <section class="portfolio-view active" data-view-panel="assets">
+                <h2 class="section-title">По классам активов</h2>
+                <div class="card">
+                  <div class="metric-row"><span>Акции</span><strong>42%</strong></div>
+                  <div class="bar"><span style="width:42%"></span></div>
+                  <div class="metric-row"><span>Облигации</span><strong>34%</strong></div>
+                  <div class="bar"><span style="width:34%"></span></div>
+                  <div class="metric-row"><span>Фонды</span><strong>16%</strong></div>
+                  <div class="bar"><span style="width:16%"></span></div>
+                  <div class="metric-row"><span>Деньги</span><strong>8%</strong></div>
+                  <div class="bar"><span style="width:8%"></span></div>
+                </div>
+              </section>
+              <section class="portfolio-view" data-view-panel="needs">
+                <h2 class="section-title">По классам потребностей</h2>
+                <div class="card">
+                  <div class="metric-row"><span>Кошелек</span><strong>7% / цель 10%</strong></div>
+                  <div class="bar"><span style="width:70%"></span></div>
+                  <div class="metric-row"><span>Сбережения</span><strong>31% / цель 30%</strong></div>
+                  <div class="bar"><span style="width:100%"></span></div>
+                  <div class="metric-row"><span>Инвестиции</span><strong>56% / цель 50%</strong></div>
+                  <div class="bar"><span style="width:100%;background:var(--warning)"></span></div>
+                  <div class="metric-row"><span>Эксперименты</span><strong>6% / цель 10%</strong></div>
+                  <div class="bar"><span style="width:60%"></span></div>
+                </div>
+              </section>
+            </div>
+            <button class="card warning" data-flow="positionControl">
+              <div class="card-head"><h3>Отклонение от Целевого портфеля</h3><span>→</span></div>
+              <p>Акции X составляют 18,4% капитала и увеличивают перевес класса «Инвестиции».</p>
+            </button>
+          </div>
+          ${accountSheet()}
+          ${bottomNav()}`
+      }
+    };
+
+    const flows = {
+      home: {
+        name: "Главный экран",
+        description: "Портфель, AI-вход и персональные поводы",
+        screens: ["home"]
+      },
+      explain: {
+        name: "Почему упал портфель",
+        description: "Запрос → причины → доказательства → действие",
+        screens: ["explainInput", "explainSummary", "explainDetails", "explainActions"]
+      },
+      briefing: {
+        name: "Рынки / витрина",
+        description: "Рынок → влияние → идеи",
+        screens: ["briefingHome", "briefingEvent", "briefingSettings", "briefingSuccess"]
+      },
+      agents: {
+        name: "Создание AI-агента",
+        description: "Поручение → правила → полномочия → журнал",
+        screens: ["agentsHome", "agentCatalog", "agentBatchSetup", "agentBatchSuccess", "agentPrompt", "agentRules", "agentPermissions", "agentCreated"]
+      },
+      priceAgent: {
+        name: "Докупка при снижении",
+        description: "Условие → влияние → согласие → наблюдение",
+        screens: ["pricePrompt", "priceRules", "priceImpact", "priceConfirm", "priceActive"]
+      },
+      positionControl: {
+        name: "Здоровье и ребалансировка",
+        description: "Отклонение → симуляция → пакетная заявка",
+        screens: ["positionAlert", "positionSimulation", "positionOrder"]
+      },
+      portfolio: {
+        name: "Структура портфеля",
+        description: "Общая сумма → классы → позиции",
+        screens: ["portfolio"]
+      },
+      cashEvent: {
+        name: "Свободный остаток",
+        description: "Деньги без движения → варианты",
+        screens: ["cashEvent", "cashOptions"]
+      },
+      documentFlow: {
+        name: "Документ через AI",
+        description: "Запрос → отчет → результат",
+        screens: ["documentRequest", "documentReady"]
+      },
+      dailySummary: {
+        name: "Ежедневная сводка",
+        description: "Поручение → правила → результат",
+        screens: ["dailySummarySetup", "dailySummaryResult"]
+      },
+      newClient: {
+        name: "Новый клиент",
+        description: "Без активов → первый портфель",
+        screens: ["newClientHome", "newClientRisk"]
+      },
+      externalAssets: {
+        name: "Активы вне БКС",
+        description: "Другой брокер → общий портфель",
+        screens: ["externalAssetsIntro", "externalAssetsResult"]
+      }
+    };
+
+    let currentFlow = "home";
+    let currentStep = 0;
+    const history = [];
+
+    const phone = document.getElementById("phone");
+    const flowList = document.getElementById("flowList");
+    const stepList = document.getElementById("stepList");
+    const flowTitle = document.getElementById("flowTitle");
+    const screenCounter = document.getElementById("screenCounter");
+    const screenGoal = document.getElementById("screenGoal");
+    const aiRole = document.getElementById("aiRole");
+    const primaryAction = document.getElementById("primaryAction");
+
+    function renderFlowList() {
+      flowList.innerHTML = Object.entries(flows).map(([id, flow]) => `
+        <button class="flow-button ${id === currentFlow ? "active" : ""}" data-flow="${id}">
+          <strong>${flow.name}</strong>
+          <span>${flow.description}</span>
+        </button>
+      `).join("");
+    }
+
+    function renderStepList() {
+      const flow = flows[currentFlow];
+      stepList.innerHTML = flow.screens.map((screenId, index) => `
+        <button class="step-button ${index === currentStep ? "active" : ""}" data-step="${index}">
+          <span class="step-number">${index + 1}</span>
+          <span>${screens[screenId].title}</span>
+        </button>
+      `).join("");
+    }
+
+    function render() {
+      const flow = flows[currentFlow];
+      const screenId = flow.screens[currentStep];
+      const screen = screens[screenId];
+
+      phone.innerHTML = screen.html();
+      flowTitle.textContent = flow.name;
+      screenCounter.textContent = `Экран ${currentStep + 1} из ${flow.screens.length}`;
+      screenGoal.textContent = screen.goal;
+      aiRole.textContent = screen.ai;
+      primaryAction.textContent = screen.action;
+      renderFlowList();
+      renderStepList();
+      phone.querySelector(".screen")?.scrollTo(0, 0);
+    }
+
+    function setFlow(flowId, step = 0, remember = true) {
+      if (!flows[flowId]) return;
+      if (remember) history.push({ flow: currentFlow, step: currentStep });
+      currentFlow = flowId;
+      currentStep = Math.min(step, flows[flowId].screens.length - 1);
+      render();
+    }
+
+    function next() {
+      const max = flows[currentFlow].screens.length - 1;
+      if (currentStep < max) {
+        history.push({ flow: currentFlow, step: currentStep });
+        currentStep += 1;
+        render();
+      }
+    }
+
+    function back() {
+      if (history.length) {
+        const previous = history.pop();
+        currentFlow = previous.flow;
+        currentStep = previous.step;
+      } else if (currentStep > 0) {
+        currentStep -= 1;
+      } else {
+        currentFlow = "home";
+        currentStep = 0;
+      }
+      render();
+    }
+
+    document.addEventListener("click", (event) => {
+      const flowTarget = event.target.closest("[data-flow]");
+      if (flowTarget) {
+        phone.classList.remove("sheet-open", "account-sheet-open", "actions-open");
+        setFlow(flowTarget.dataset.flow);
+        return;
+      }
+
+      const goTarget = event.target.closest("[data-go]");
+      if (goTarget) {
+        const screenId = goTarget.dataset.go;
+        if (screenId === "explain") {
+          phone.classList.remove("actions-open", "account-sheet-open");
+          phone.classList.add("sheet-open");
+          return;
+        }
+        const targetStep = flows.explain.screens.indexOf(screenId);
+        setFlow("explain", Math.max(0, targetStep));
+        return;
+      }
+
+      const stepTarget = event.target.closest("[data-step]");
+      if (stepTarget) {
+        currentStep = Number(stepTarget.dataset.step);
+        render();
+        return;
+      }
+
+      if (event.target.closest("[data-next]")) next();
+      if (event.target.closest("[data-back]")) back();
+
+      if (event.target.closest("[data-actions-toggle]")) {
+        phone.classList.toggle("actions-open");
+      }
+
+      if (event.target.closest("[data-actions-close]")) {
+        phone.classList.remove("actions-open");
+      }
+
+      if (event.target.closest("[data-sheet-close]")) {
+        phone.classList.remove("sheet-open");
+      }
+
+      if (event.target.closest("[data-account-toggle]")) {
+        phone.classList.remove("actions-open", "sheet-open");
+        phone.classList.add("account-sheet-open");
+      }
+
+      if (event.target.closest("[data-account-close]")) {
+        phone.classList.remove("account-sheet-open");
+      }
+
+      const viewSwitch = event.target.closest("[data-view-switch]");
+      if (viewSwitch) {
+        const view = viewSwitch.dataset.viewSwitch;
+        phone.querySelectorAll("[data-view-switch]").forEach((button) => {
+          button.classList.toggle("active", button === viewSwitch);
+        });
+        phone.querySelectorAll("[data-view-panel]").forEach((panel) => {
+          panel.classList.toggle("active", panel.dataset.viewPanel === view);
+        });
+      }
+
+      if (event.target.closest("[data-agent-custom]")) {
+        const customStep = flows.agents.screens.indexOf("agentPrompt");
+        history.push({ flow: currentFlow, step: currentStep });
+        currentFlow = "agents";
+        currentStep = customStep;
+        render();
+      }
+    });
+
+    document.getElementById("restartButton").addEventListener("click", () => {
+      history.length = 0;
+      currentStep = 0;
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
