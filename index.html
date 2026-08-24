@@ -86,7 +86,7 @@
 
     .workspace {
       display: grid;
-      grid-template-columns: minmax(220px, 270px) minmax(430px, 1fr) minmax(260px, 340px);
+      grid-template-columns: minmax(220px, 270px) minmax(430px, 1fr);
       min-height: calc(100vh - 64px);
     }
 
@@ -98,6 +98,7 @@
 
     .sidebar { border-right: 1px solid var(--line-dark); }
     .inspector { border-left: 1px solid var(--line-dark); }
+    .inspector { display: none; }
 
     .panel-label {
       margin: 0 0 12px;
@@ -4135,10 +4136,8 @@
       }
 
       if (event.target.closest("[data-agent-custom]")) {
-        history.push({ flow: currentFlow, step: currentStep });
-        currentFlow = "agentCreate";
-        currentStep = 0;
-        render();
+        phone.classList.remove("actions-open", "sheet-open", "account-sheet-open", "agent-sheet-open");
+        setFlow("agentCreate");
       }
     });
 
