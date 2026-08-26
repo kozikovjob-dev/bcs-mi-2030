@@ -86,7 +86,7 @@
 
     .workspace {
       display: grid;
-      grid-template-columns: minmax(220px, 270px) minmax(430px, 1fr);
+      grid-template-columns: 1fr;
       min-height: calc(100vh - 64px);
     }
 
@@ -98,6 +98,7 @@
 
     .sidebar { border-right: 1px solid var(--line-dark); }
     .inspector { border-left: 1px solid var(--line-dark); }
+    .sidebar,
     .inspector { display: none; }
 
     .panel-label {
@@ -2221,7 +2222,7 @@
     }
 
     @media (max-width: 1040px) {
-      .workspace { grid-template-columns: 220px minmax(430px, 1fr); }
+      .workspace { grid-template-columns: 1fr; }
       .inspector { display: none; }
     }
 
